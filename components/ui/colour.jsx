@@ -9,6 +9,4 @@ const Colour = (props) => (
     </span>
 );
 
-export {
-    Colour
-};
+export { Colour, SASSVars };

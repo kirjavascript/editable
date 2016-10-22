@@ -3,35 +3,83 @@ import { observer } from 'mobx-react';
 
 import styles from './root.scss';
 import store from '../state/store';
+import { allTags } from '../state/editables';
 
 import Tree from './tree/index.jsx';
 
-const Root = observer((props) => <div>
+function saveClipboard() {
+    let clipboard = document.querySelector(`.${styles.clipboard}`);
+    clipboard.select();
+    document.execCommand('copy');
+    clipboard.blur();
+    store.savedClipboard = 1;
+    setTimeout(()=> {
+        store.savedClipboard = 0;
+    }, 1000);
+}
 
-    <Tree node={props.store.xml.tree.root}/>
+@observer
+class Root extends React.Component {
 
-    <input
-        className={styles.input}
-        placeholder="Paste XML..."
-        value=""
-        onChange={store::props.store.changeInput}/>
+    
 
-    <div className={styles.menu}>
-        <button onClick={store::props.store.ipsumize}>
-            Ipsumize Content
-        </button>
-    </div>
+    render() {
+        let { store } = this.props;
 
-    {!!props.store.debug && <pre className={styles.debug}>
-        {JSON.stringify(props.store.xml.tree,null,4)}
-        {`\n\n\n`}
-        {props.store.markup}
-    </pre>}
+        return <div>
 
-</div>);
+            <Tree node={store.xml.tree.root}/>
+
+            <input
+                className={styles.input}
+                placeholder="Paste XML..."
+                value=""
+                onChange={store::store.changeInput}/>
+                
+            <div className={styles.menu}>
+                <button>
+                    add all tags / block
+                </button>
+                <select>
+                    <option>Set Multiple Tags</option>
+                    {allTags.map((tag, i) => <option key={i} value={tag}>
+                        {tag}
+                    </option>)}
+                </select>
+                <button onClick={store::store.ipsumize}>
+                    Ipsumize Content
+                </button>
+                <button onClick={store::store.clearCache}>
+                    Reset Name Cache
+                </button>
+                <button onClick={saveClipboard}>
+                    {store.savedClipboard?'Copied!':'Copy To Clipboard'}
+                </button>
+                <a href="http://kirjava.xyz" target="_blank">
+                    <button>More Stuff</button>
+                </a>
+            </div>
+
+            <textarea
+                className={styles.clipboard}
+                value={store.markup}
+                readOnly={true}/>
+
+            {!!store.debug && <pre ref="debug" className={styles.debug}>
+                {store.markup}
+                {`\n\n\n`}
+                {JSON.stringify(store.xml.tree,null,4)}
+            </pre>}
+
+        </div>;
+    }
+
+}
 
 render(<Root store={store}/>, document.querySelector('#root'));
 
 // scheme
 // xml, php, motion
 // tag slides out to icons?
+
+// pImporter

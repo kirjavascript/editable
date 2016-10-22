@@ -2,7 +2,7 @@ import { observer } from 'mobx-react';
 
 import styles from './styles.scss';
 
-import { Colour } from './colour.jsx';
+import { Colour } from '../ui/index';
 
 @observer
 class Attributes extends React.Component {

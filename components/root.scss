@@ -27,6 +27,12 @@
     right: 0;
 }
 
+.clipboard {
+    position: absolute;
+    left: -100%;
+    top: -100%;
+}
+
 // base...
 
 @font-face {
@@ -69,12 +75,13 @@ button, select {
     border: none;
     padding: 5px 10px;
     cursor: pointer;
-    display: inline-block;
+    display: block;
     margin: 5px;
     -moz-appearance:none;
     text-align: left;
     background-color: #3d4350;
     color: #a6b2c0;
+    width: 170px;
 }
 
 h1 {

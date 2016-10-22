@@ -1,21 +1,28 @@
 import { action, computed, observable } from 'mobx';
-import xmlStringify from 'xml-stringify';
-import xmlBeautifier from 'xml-beautifier';
 
-import { initialTree, debugTree, xmlParseExtra } from './misc-data';
+import {
+
+    initialTree,
+    xmlParseExtra,
+    getOutput
+
+} from './xml';
+
 import { ipsum } from './ipsum';
 
 class Store {
+    debug = __DEV__ ? 1 : 0;
     @observable xml = {
         tree: {...initialTree}
     };
-    @observable debug = __DEV__ ? 1 : 0;
+    @observable nameCache = [];
+    @observable savedClipboard = 0;
 
     @computed get markup() {
         let output;
 
         try {
-            output = xmlBeautifier(xmlStringify(this.xml.tree));
+            output = getOutput(this.xml);
         }
         catch (e) {
             output = `Error: ${e}`;
@@ -31,6 +38,10 @@ class Store {
         }
     }
 
+    @action clearCache() {
+        this.nameCache.replace([]);
+    }
+
     @action ipsumize() {
         ipsum(this.xml.tree.root);
     }
@@ -40,7 +51,6 @@ let store = new Store;
 
 if (__DEV__) {
     window.store = store;
-    store.xml.tree = debugTree;
 }
 
 export default store;

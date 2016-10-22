@@ -3,7 +3,7 @@ let lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiu
 function ipsum(node) {
 
     if (node.content) {
-        let count = node.content.split(' ').length;
+        let count = node.content.trim().split(' ').length;
 
         node.content = lorem.split(' ').splice(0,count).join` `;
     }
