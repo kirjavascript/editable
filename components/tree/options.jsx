@@ -3,7 +3,12 @@ import { Motion, spring } from 'react-motion';
 import styles from './styles.scss';
 import { Colour, Icon } from '../ui/index';
 
-import { setEditable, getEditableTypes, typeList } from '../../state/editables';
+import {
+    setEditable,
+    getEditableTypes,
+    typeList,
+    clearEditables
+} from '../../state/editables';
 
 class Options extends React.Component {
 
@@ -25,9 +30,6 @@ class Options extends React.Component {
         this.xml = () => {
             node.php.keepTag = !node.php.keepTag;
         };
-    }
-
-    componentDidMount() {
     }
 
     render() {

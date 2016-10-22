@@ -3,7 +3,12 @@ import { observer } from 'mobx-react';
 
 import styles from './root.scss';
 import store from '../state/store';
-import { allTags } from '../state/editables';
+import { 
+    allTags,
+    getEditableTypes,
+    setMultiple,
+    resetEditables
+} from '../state/editables';
 
 import Tree from './tree/index.jsx';
 
@@ -21,10 +26,32 @@ function saveClipboard() {
 @observer
 class Root extends React.Component {
 
-    
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            multiTag: ''
+        };
+
+        this.pickTag = (e) => {
+            this.setState({multiTag:e.target.value});
+        };
+
+        this.pickType = (e) => {
+            setMultiple(this.state.multiTag, e.target.value);
+            this.setState({multiTag:''});
+        };
+    }
 
     render() {
         let { store } = this.props;
+        let { multiTag } = this.state;
+
+        let editableTypes;
+
+        if (multiTag) {
+            editableTypes = getEditableTypes(multiTag);
+        }
 
         return <div>
 
@@ -37,17 +64,38 @@ class Root extends React.Component {
                 onChange={store::store.changeInput}/>
                 
             <div className={styles.menu}>
-                <button>
-                    add all tags / block
-                </button>
-                <select>
-                    <option>Set Multiple Tags</option>
+                {multiTag && <select
+                    value=""
+                    className={styles.editableType}
+                    onChange={this.pickType}>
+                    <option value="">Editable</option>
+                    {editableTypes.map((type, i) => <option key={i} value={type}>
+                        {type}
+                    </option>)}
+                </select>}
+                <select
+                    style={{
+                        width: multiTag?85:null,
+                        marginLeft: multiTag?90:null
+                    }}
+                    value={multiTag}
+                    onChange={this.pickTag}>
+                    <option value="">Set Multiple Tags</option>
                     {allTags.map((tag, i) => <option key={i} value={tag}>
                         {tag}
                     </option>)}
                 </select>
+
+
+                <button>
+                    add all tags / block
+                </button>
+
                 <button onClick={store::store.ipsumize}>
                     Ipsumize Content
+                </button>
+                <button onClick={resetEditables}>
+                    Reset Editables
                 </button>
                 <button onClick={store::store.clearCache}>
                     Reset Name Cache

@@ -30,6 +30,32 @@ function setEditable(node, type, cache) {
     }
 }
 
+function setMultiple(tag, type, node) {
+    if (node) {
+        if (node.name == tag) {
+            setEditable(node, type);
+        }
+        node.children.forEach((child) => {
+            setMultiple(tag, type, child);
+        });
+    }
+    else {
+        setMultiple(tag, type, store.xml.tree.root);
+    }
+}
+
+function resetEditables({node}) {
+    if (node) {
+        node.php && (node.php.enabled = 0);
+        node.children.forEach((node) => {
+            resetEditables({node});
+        });
+    }
+    else {
+        resetEditables({node: store.xml.tree.root});
+    }
+}
+
 function getEditableTypes(name) {
     // keep tag flag (!)
     let obj = editableTypes.find((d) => ~d.tags.indexOf(name));
@@ -88,7 +114,8 @@ let allTags = [].concat(...editableTypes.map((d) => d.tags)).reverse();
 export {
     setEditable,
     getEditableTypes,
-    editableTypes,
+    resetEditables,
+    setMultiple,
     typeList,
     allTags,
 };
