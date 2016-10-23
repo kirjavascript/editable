@@ -89,7 +89,7 @@ class Root extends React.Component {
 
 
                 <button>
-                    add all tags / block / textarea
+                    add all tags / block / textarea / Prefix... / remove motion 
                 </button>
 
                 <button onClick={store::store.ipsumize}>

@@ -15,13 +15,6 @@ let initialTree = xmlParse(`
         </select>
         <img class="bork" src="/img/test" alt="asdasd" title="asdasd"/>
     </div>
-    <p class="item">
-        <!-- asdasda -->
-        Donate in one-off, monthly or annual amounts
-        <b> test </b>
-        Donate in one-off, monthly or annual amounts
-        <b>test2</b>
-    </p>
 
 `);
 
@@ -77,7 +70,7 @@ function addPHPAttrs(tree) {
 function getOutput(tree) {
     let treeClone = JSON.parse(JSON.stringify(tree));
     tree = addEditableMarkup(treeClone);
-    let rendered = render(tree);
+    let rendered = render(tree, { closingSingleTag: 'slash' });
     return phpBeautifier(rendered);
 }
 
@@ -95,6 +88,10 @@ function addEditableMarkup(content) {
             else {
                 return phpStr;
             }
+        }
+        else if (node.content) {
+            node.content = addEditableMarkup(node.content);
+            return node;
         }
         else {
             return node;

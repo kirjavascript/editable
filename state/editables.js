@@ -6,7 +6,7 @@ function setEditable(node, type, cache) {
     // calculate name
     if (node.php.editable != type) {
         node.php.editable = type;
-        let className = node.attrs.class ? `_${node.attrs.class}`:'';
+        let className = node.attrs && node.attrs.class ? `_${node.attrs.class}`:'';
         let base = `${type}${className}`;
 
         let str = base, num = 1;
@@ -108,7 +108,7 @@ let typeList = Object.keys(configGenerator);
 
 let editableTypes = [
     { types: ['input'], tags: ['h1','h2','h3','h4','h5','h6']},
-    { types: ['wysiwyg', 'input'], tags: ['p','span','b']},
+    { types: ['input', 'wysiwyg'], tags: ['p','span','b']},
     { types: ['image'], tags: ['img']},
     { types: ['select'], tags: ['select']},
     { types: ['link'], tags: ['a']},
