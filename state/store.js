@@ -41,7 +41,7 @@ class Store {
     }
 
     @action ipsumize() {
-        ipsum(this.xml.tree);
+        this.xml.tree = ipsum(this.xml.tree);
     }
 }
 

@@ -30,29 +30,34 @@ function setEditable(node, type, cache) {
     }
 }
 
-function setMultiple(tag, type, node) {
-    if (node) {
-        if (node.tag == tag) {
-            setEditable(node, type);
-        }
-        node.children.forEach((child) => {
-            setMultiple(tag, type, child);
+function setMultiple(tag, type, content) {
+    if (content) {
+        content.forEach((node) => {
+            if (node.tag == tag) {
+                setEditable(node, type);
+            }
+            if (node.content) {
+                setMultiple(tag, type, node.content);
+            }
         });
+
     }
     else {
-        setMultiple(tag, type, store.xml.tree.root);
+        setMultiple(tag, type, store.xml.tree);
     }
 }
 
-function resetEditables({node}) {
-    if (node) {
-        node.php && (node.php.enabled = 0);
-        node.children.forEach((node) => {
-            resetEditables({node});
+function resetEditables({content}) {
+    if (content) {
+        content.forEach((node) => {
+            if (typeof node != 'string') {
+                node.php.enabled = 0;
+                resetEditables({content:node.content});
+            }
         });
     }
     else {
-        resetEditables({node: store.xml.tree.root});
+        resetEditables({content: store.xml.tree});
     }
 }
 

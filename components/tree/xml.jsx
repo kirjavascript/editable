@@ -40,10 +40,7 @@ class XML extends React.Component {
                 leave={this.leave}
                 node={node}>
 
-                {/* children / content */}
-                <div className={styles.children}>
-                     <Tree content={node.content}/>
-                </div>
+                <Tree content={node.content}/>
 
             </XMLTag>
 
@@ -67,7 +64,9 @@ const XMLTag = (props) => {
             &gt;
         </span>          
 
-            {props.children}
+            <div className={styles.children}>
+                {props.children}
+            </div>
 
         {/* closing tag */}
         {kids && <span>
