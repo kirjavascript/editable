@@ -88,7 +88,7 @@ class Root extends React.Component {
 
 
                 <button>
-                    add all tags / block
+                    fix textContent parse / add all tags / block / textarea
                 </button>
 
                 <button onClick={store::store.ipsumize}>
@@ -125,9 +125,3 @@ class Root extends React.Component {
 }
 
 render(<Root store={store}/>, document.querySelector('#root'));
-
-// scheme
-// xml, php, motion
-// tag slides out to icons?
-
-// pImporter

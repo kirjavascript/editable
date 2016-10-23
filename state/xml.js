@@ -3,24 +3,38 @@ import xmlStringify from 'xml-stringify';
 import xmlBeautifier from 'xml-beautifier';
 
 let initialTree = xmlParseExtra(`
-    <div>
-        <h1 class="heading"> Title </h1>
-        <p class="paragraph"> Paragraph of text </p>
-        <p class="paragraph"> Paragraph of text </p>
-        <a href="http://www.google.com" class="hyper">Google</a>
-        <select class="choose">
-            <option value="value1">text1</option>
-            <option value="value2">text2</option>
-        </select>
-        <img class="bork" src="/img/test" alt="asdasd" title="asdasd"/>
-    </div>
+
+    <p class="item">
+        <img src="/img/tick.svg" alt="tick"/>
+        Donate in one-off, monthly or annual amounts
+        <b> test </b>
+        Donate in one-off, monthly or annual amounts
+        <b> test </b>
+    </p>
 `);
 
+
+/*
+
+<div>
+    <h1 class="heading"> Title </h1>
+    <p class="paragraph"> Paragraph of text </p>
+    <p class="paragraph"> Paragraph of text </p>
+    <a href="http://www.google.com" class="hyper">Google</a>
+    <select class="choose">
+        <option value="value1">text1</option>
+        <option value="value2">text2</option>
+    </select>
+    <img class="bork" src="/img/test" alt="asdasd" title="asdasd"/>
+</div>
+
+*/
 function xmlParseExtra(str) {
     let tree = xmlParse(str);
     tree.root && addExtra(tree.root);
     return tree;
 }
+
 
 function addExtra(node) {
     Object.assign(node, {

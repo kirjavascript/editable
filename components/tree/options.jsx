@@ -38,13 +38,14 @@ class Options extends React.Component {
 
         let editTypes = getEditableTypes(node.name);
         let numTypes = editTypes.length;
+        let motion = {stiffness:300};
 
         return do {
             if (php) {
                 <Motion
                     defaultStyle={{marginLeft: (-25 * 2),opacity:0}}
                     style={{
-                        marginLeft: spring(show?5:(-25 * 2)),
+                        marginLeft: spring(show?5:(-25 * 2), motion),
                         opacity: spring(show?1:0)
                     }}>
                     {(style) => <span 
@@ -61,8 +62,8 @@ class Options extends React.Component {
                 <Motion
                     defaultStyle={{marginLeft:(-25 * numTypes),opacity:0}}
                     style={{
-                        marginLeft: spring(show?(numTypes?5:0):(-25 * numTypes)),
-                        opacity: spring(show?1:0),
+                        marginLeft: spring(show?(numTypes?5:0):(-25 * numTypes), motion),
+                        opacity: spring(show?1:0, motion),
                     }}>
                     {(style) => <span 
                         className={styles.options}
