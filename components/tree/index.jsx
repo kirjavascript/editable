@@ -13,21 +13,27 @@ class Tree extends React.Component {
     constructor(props) {
         super(props);
 
-        let { node } = this.props;
+        let { content } = this.props;
     }
 
     render() {
-        let { node } = this.props;
-        let php = node.php.enabled;
+        let { content } = this.props;
 
-        return do {
-            if (php) {
-                <PHP node={node}/>;
-            }
-            else {
-                <XML node={node}/>;
-            }
-        };
+        return <div>
+
+            {content.map((node, i) => do {
+                if (typeof node == 'string') {
+                    <div key={i}>{node}</div>;
+                }
+                else if (node.php.enabled) {
+                    <PHP key={i} node={node}/>;
+                }
+                else {
+                    <XML key={i} node={node}/>;
+                }
+            })}
+
+        </div>;
     }
 }
 

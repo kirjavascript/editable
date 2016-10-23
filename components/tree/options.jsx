@@ -36,7 +36,7 @@ class Options extends React.Component {
         let { show, node } = this.props;
         let php = node.php.enabled;
 
-        let editTypes = getEditableTypes(node.name);
+        let editTypes = getEditableTypes(node.tag);
         let numTypes = editTypes.length;
         let motion = {stiffness:300};
 

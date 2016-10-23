@@ -13,7 +13,7 @@ module.exports = {
             {
                 test:   /\.jsx?$/,
                 loader: 'babel',
-                exclude: /node_modules/,
+                include: /(components|state)/,
                 query: {
                     presets: ['es2015', 'react', 'stage-0'],
                     plugins: ['transform-decorators-legacy','transform-class-properties']
@@ -26,6 +26,10 @@ module.exports = {
             {
                 test: /\.svg$/,
                 loader: 'svg-url?noquotes!svgo'
+            },
+            {
+                test: /\.json$/,
+                loader: 'json'
             },
         ],
     },
@@ -61,7 +65,7 @@ if (~process.argv.indexOf('--crush')) {
 
 if (~process.argv.indexOf('--dev')) {
 
-    module.exports.devtool = 'cheap-module-source-map';
+    module.exports.devtool = 'source-map';
 
     module.exports.module.preLoaders = [
         {

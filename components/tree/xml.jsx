@@ -42,10 +42,7 @@ class XML extends React.Component {
 
                 {/* children / content */}
                 <div className={styles.children}>
-                    {node.children.map((child,i) => (
-                        <Tree key={i} node={child}/>
-                    ))}
-                    {node.content}
+                     <Tree content={node.content}/>
                 </div>
 
             </XMLTag>
@@ -57,15 +54,15 @@ class XML extends React.Component {
 
 const XMLTag = (props) => {
     let { node } = props;
-    let kids = !!node.children.length || node.content;
+    let kids = !!node.content.length;
 
     return <span>
         {/* start tag / attributes */}
         <span onMouseOver={props.enter} onMouseOut={props.leave}>
             &lt;
-            <Colour is="red" bold={true}>{node.name}</Colour>
+            <Colour is="red" bold={true}>{node.tag}</Colour>
             {!props.hideOptions && <Options show={props.hover} node={node}/>}
-            <Attributes attrs={node.attributes}/>
+            <Attributes attrs={node.attrs}/>
             {!kids && '/'}
             &gt;
         </span>          
@@ -74,7 +71,7 @@ const XMLTag = (props) => {
 
         {/* closing tag */}
         {kids && <span>
-            &lt;/<Colour is="red" bold={true}>{node.name}</Colour>&gt;
+            &lt;/<Colour is="red" bold={true}>{node.tag}</Colour>&gt;
         </span>}
     </span>;
 };

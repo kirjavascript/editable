@@ -3,7 +3,7 @@ import { action, computed, observable } from 'mobx';
 import {
 
     initialTree,
-    xmlParseExtra,
+    xmlParse,
     getOutput
 
 } from './xml';
@@ -13,7 +13,7 @@ import { ipsum } from './ipsum';
 class Store {
     debug = __DEV__ ? 1 : 0;
     @observable xml = {
-        tree: {...initialTree}
+        tree: initialTree
     };
     @observable nameCache = [];
     @observable savedClipboard = 0;
@@ -22,7 +22,7 @@ class Store {
         let output;
 
         try {
-            output = getOutput(this.xml);
+            output = getOutput(this.xml.tree);
         }
         catch (e) {
             output = `Error: ${e}`;
@@ -32,10 +32,8 @@ class Store {
 
     @action changeInput(e) {
         let input = e.target.value;
-        let newTree = xmlParseExtra(input);
-        if (newTree.root) {
-            this.xml.tree = newTree;
-        }
+        let newTree = xmlParse(input);
+        this.xml.tree = newTree;
     }
 
     @action clearCache() {
@@ -43,7 +41,7 @@ class Store {
     }
 
     @action ipsumize() {
-        ipsum(this.xml.tree.root);
+        ipsum(this.xml.tree);
     }
 }
 

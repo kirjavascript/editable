@@ -12,17 +12,6 @@ import {
 
 import Tree from './tree/index.jsx';
 
-function saveClipboard() {
-    let clipboard = document.querySelector(`.${styles.clipboard}`);
-    clipboard.select();
-    document.execCommand('copy');
-    clipboard.blur();
-    store.savedClipboard = 1;
-    setTimeout(()=> {
-        store.savedClipboard = 0;
-    }, 1000);
-}
-
 @observer
 class Root extends React.Component {
 
@@ -30,7 +19,8 @@ class Root extends React.Component {
         super(props);
 
         this.state = {
-            multiTag: ''
+            multiTag: '',
+            savedClipboard: 0
         };
 
         this.pickTag = (e) => {
@@ -40,6 +30,17 @@ class Root extends React.Component {
         this.pickType = (e) => {
             setMultiple(this.state.multiTag, e.target.value);
             this.setState({multiTag:''});
+        };
+
+        this.saveClipboard = () => {
+            let clipboard = document.querySelector(`.${styles.clipboard}`);
+            clipboard.select();
+            document.execCommand('copy');
+            clipboard.blur();
+            this.setState({savedClipboard:1});
+            setTimeout(()=> {
+                this.setState({savedClipboard:0});
+            }, 1000);
         };
     }
 
@@ -55,58 +56,66 @@ class Root extends React.Component {
 
         return <div>
 
-            <Tree node={store.xml.tree.root}/>
+            <Tree content={store.xml.tree}/>
 
             <input
                 className={styles.input}
                 placeholder="Paste XML..."
                 value=""
                 onChange={store::store.changeInput}/>
-                
-            <div className={styles.menu}>
-                {multiTag && <select
-                    value=""
-                    className={styles.editableType}
-                    onChange={this.pickType}>
-                    <option value="">Editable</option>
-                    {editableTypes.map((type, i) => <option key={i} value={type}>
-                        {type}
-                    </option>)}
-                </select>}
-                <select
-                    style={{
-                        width: multiTag?85:null,
-                        marginLeft: multiTag?90:null
-                    }}
-                    value={multiTag}
-                    onChange={this.pickTag}>
-                    <option value="">Set Multiple Tags</option>
-                    {allTags.map((tag, i) => <option key={i} value={tag}>
-                        {tag}
-                    </option>)}
-                </select>
+
+    {/*
 
 
-                <button>
-                    fix textContent parse / add all tags / block / textarea
-                </button>
 
-                <button onClick={store::store.ipsumize}>
-                    Ipsumize Content
-                </button>
-                <button onClick={resetEditables}>
-                    Reset Editables
-                </button>
-                <button onClick={store::store.clearCache}>
-                    Reset Name Cache
-                </button>
-                <button onClick={saveClipboard}>
-                    {store.savedClipboard?'Copied!':'Copy To Clipboard'}
-                </button>
-                <a href="http://kirjava.xyz" target="_blank">
-                    <button>More Stuff</button>
-                </a>
-            </div>
+    
+<div className={styles.menu}>
+    {multiTag && <select
+        value=""
+        className={styles.editableType}
+        onChange={this.pickType}>
+        <option value="">Editable</option>
+        {editableTypes.map((type, i) => <option key={i} value={type}>
+            {type}
+        </option>)}
+    </select>}
+    <select
+        style={{
+            width: multiTag?85:null,
+            marginLeft: multiTag?90:null
+        }}
+        value={multiTag}
+        onChange={this.pickTag}>
+        <option value="">Set Multiple Tags</option>
+        {allTags.map((tag, i) => <option key={i} value={tag}>
+            {tag}
+        </option>)}
+    </select>
+
+
+    <button>
+        fix textContent parse / add all tags / block / textarea
+    </button>
+
+    <button onClick={store::store.ipsumize}>
+        Ipsumize Content
+    </button>
+    <button onClick={resetEditables}>
+        Reset Editables
+    </button>
+    <button onClick={store::store.clearCache}>
+        Reset Name Cache
+    </button>
+    <button onClick={this.saveClipboard}>
+        {this.state.savedClipboard?'Copied!':'Copy To Clipboard'}
+    </button>
+    <a href="http://kirjava.xyz" target="_blank">
+        <button>More Stuff</button>
+    </a>
+</div>
+    */}
+
+
 
             <textarea
                 className={styles.clipboard}

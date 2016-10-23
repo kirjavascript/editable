@@ -6,7 +6,7 @@ function setEditable(node, type, cache) {
     // calculate name
     if (node.php.editable != type) {
         node.php.editable = type;
-        let className = node.attributes.class ? `_${node.attributes.class}`:'';
+        let className = node.attrs.class ? `_${node.attrs.class}`:'';
         let base = `${type}${className}`;
 
         let str = base, num = 1;
@@ -21,7 +21,7 @@ function setEditable(node, type, cache) {
     if (~typeList.indexOf(type)) {
         node.php.config = {};
         configGenerator[type](node);
-        if (~contentTags.indexOf(node.name)) {
+        if (~contentTags.indexOf(node.tag)) {
             node.php.keepTag = true;
         }
     }
@@ -32,7 +32,7 @@ function setEditable(node, type, cache) {
 
 function setMultiple(tag, type, node) {
     if (node) {
-        if (node.name == tag) {
+        if (node.tag == tag) {
             setEditable(node, type);
         }
         node.children.forEach((child) => {
@@ -64,11 +64,11 @@ function getEditableTypes(name) {
 
 let configGenerator = {
     image(node) {
-        let title = node.attributes.title || node.attributes.alt;
+        let title = node.attrs.title || node.attrs.alt;
 
         let config = {
             attributes: {
-                'class': node.attributes.class
+                'class': node.attrs.class
             }
         };
 
@@ -78,21 +78,23 @@ let configGenerator = {
     },
     input(node) {
         node.php.config = {
-            placeholder: node.content
+            placeholder: node.content.filter((child) => {
+                return typeof child == 'string';
+            }).join(' ')
         };
     },
     wysiwyg(node) {},
     link(node) {
-        node.php.config = {...node.attributes};
+        node.php.config = {...node.attrs};
         delete node.php.config.href;
     },
     select(node) {
-        let store = node.children
-            .filter((d)=>d.name=='option')
-            .map((d) => ([d.attributes.value, d.content]));
+        let store = node.content
+            .filter((d)=>d.tag=='option')
+            .map((d) => ([d.attrs.value, d.content.join('')]));
 
         node.php.config = { 
-            store, 'class': node.attributes.class
+            store, 'class': node.attrs.class
         };
     }
 };
@@ -101,13 +103,13 @@ let typeList = Object.keys(configGenerator);
 
 let editableTypes = [
     { types: ['input'], tags: ['h1','h2','h3','h4','h5','h6']},
-    { types: ['wysiwyg', 'input'], tags: ['p','span']},
+    { types: ['wysiwyg', 'input'], tags: ['p','span','b']},
     { types: ['image'], tags: ['img']},
     { types: ['select'], tags: ['select']},
     { types: ['link'], tags: ['a']},
 ];
 
-let contentTags = ['h1','h2','h3','h4','h5','h6','span'];
+let contentTags = ['h1','h2','h3','h4','h5','h6','span','b'];
 
 let allTags = [].concat(...editableTypes.map((d) => d.tags)).reverse();
 
