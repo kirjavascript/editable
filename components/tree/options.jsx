@@ -1,5 +1,3 @@
-import { Motion, spring } from 'react-motion';
-
 import styles from './styles.scss';
 import { Colour, Icon } from '../ui/index';
 
@@ -42,52 +40,32 @@ class Options extends React.Component {
 
         return do {
             if (php) {
-                <Motion
-                    defaultStyle={{marginLeft: (-25 * 2),opacity:0}}
-                    style={{
-                        marginLeft: spring(show?5:(-25 * 2), motion),
-                        opacity: spring(show?1:0)
-                    }}>
-                    {(style) => <span 
-                        className={styles.options}
-                        style={style}>
+                <span 
+                    className={styles.options}
+                    style={{marginLeft:5}}>
 
-                        <Icon type="xml" onClick={this.xml}/>
-                        <Icon type="delete" onClick={this.delete}/>
+                    <Icon type="xml" onClick={this.xml}/>
+                    <Icon type="delete" onClick={this.delete}/>
 
-                    </span>}
-                </Motion>;
+                </span>;
             }
             else {
-                <Motion
-                    defaultStyle={{marginLeft:(-25 * numTypes),opacity:0}}
-                    style={{
-                        marginLeft: spring(show?(numTypes?5:0):(-25 * numTypes), motion),
-                        opacity: spring(show?1:0, motion),
-                    }}>
-                    {(style) => <span 
-                        className={styles.options}
-                        style={{
-                            ...style
-                        }}>
+                <span 
+                    className={styles.options}
+                    style={{marginLeft:(numTypes?5:0)}}>
 
-                        {editTypes.map((type) => (
-                            <Icon
-                                key={type}
-                                type={type}
-                                onClick={this[type]}/>
-                        ))}
+                    {editTypes.map((type) => (
+                        <Icon
+                            key={type}
+                            type={type}
+                            onClick={this[type]}/>
+                    ))}
 
-                    </span>}
-                </Motion>;
+                </span>;
             }
         };
     }
 
 }
 
-// <Icon type="input"/>
-// <Icon type="image"/>
-// <Icon type="dropdown"/>
-// <Icon type="button"/>
 export default Options;

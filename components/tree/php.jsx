@@ -96,8 +96,11 @@ const PHPObject = (props) => {
                     else if (typeof configClone == 'object') {
                         <PHPObject config={configClone}/>;
                     }
-                    else {
+                    else if (typeof config == 'string'){
                         <Colour is="green">{`"${config.trim()}"`}</Colour>;
+                    }
+                    else {
+                        <Colour is="orange">{`${config.toString()}`}</Colour>;
                     }
                 }}
                 {i != keys.length-1 && ', '}

@@ -17,6 +17,7 @@ class Store {
     };
     @observable nameCache = [];
     @observable savedClipboard = 0;
+    @observable prefix = '';
 
     @computed get markup() {
         let output;

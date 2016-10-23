@@ -42,6 +42,10 @@ class Root extends React.Component {
                 this.setState({savedClipboard:0});
             }, 1000);
         };
+
+        this.setPrefix = (e) => {
+            store.prefix = e.target.value;
+        };
     }
 
     render() {
@@ -65,33 +69,37 @@ class Root extends React.Component {
                 onChange={store::store.changeInput}/>
     
             <div className={styles.menu}>
-                {multiTag && <select
-                    value=""
-                    className={styles.editableType}
-                    onChange={this.pickType}>
-                    <option value="">Editable</option>
-                    {editableTypes.map((type, i) => <option key={i} value={type}>
-                        {type}
-                    </option>)}
-                </select>}
-                <select
-                    style={{
-                        width: multiTag?85:null,
-                        marginLeft: multiTag?90:null
-                    }}
-                    value={multiTag}
-                    onChange={this.pickTag}>
-                    <option value="">Set Multiple Tags</option>
-                    {allTags.map((tag, i) => <option key={i} value={tag}>
-                        {tag}
-                    </option>)}
-                </select>
-
-
+                <input
+                    type="text"
+                    value={store.prefix}
+                    onChange={this.setPrefix}
+                    placeholder="Prefix..."/>
                 <button>
-                    add all tags / block / textarea / Prefix... / remove motion 
+                    add all tags / block
                 </button>
-
+                <div style={{position:'relative'}}>
+                    {multiTag && <select
+                        value=""
+                        className={styles.editableType}
+                        onChange={this.pickType}>
+                        <option value="">Editable</option>
+                        {editableTypes.map((type, i) => <option key={i} value={type}>
+                            {type}
+                        </option>)}
+                    </select>}
+                    <select
+                        style={{
+                            width: multiTag?85:null,
+                            marginLeft: multiTag?90:null
+                        }}
+                        value={multiTag}
+                        onChange={this.pickTag}>
+                        <option value="">Set Multiple Tags</option>
+                        {allTags.map((tag, i) => <option key={i} value={tag}>
+                            {tag}
+                        </option>)}
+                    </select>
+                </div>
                 <button onClick={store::store.ipsumize}>
                     Ipsumize Content
                 </button>

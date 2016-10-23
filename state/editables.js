@@ -7,7 +7,8 @@ function setEditable(node, type, cache) {
     if (node.php.editable != type) {
         node.php.editable = type;
         let className = node.attrs && node.attrs.class ? `_${node.attrs.class}`:'';
-        let base = `${type}${className}`;
+        let prefix = store.prefix ? store.prefix+'_' : '';
+        let base = `${prefix}${type}${className}`;
 
         let str = base, num = 1;
         while(~store.nameCache.indexOf(str)) {
@@ -52,6 +53,7 @@ function resetEditables({content}) {
         content.forEach((node) => {
             if (typeof node != 'string') {
                 node.php.enabled = 0;
+                node.php.editable = '';
                 resetEditables({content:node.content});
             }
         });
@@ -101,14 +103,22 @@ let configGenerator = {
         node.php.config = { 
             store, 'class': node.attrs.class
         };
+    },
+    textarea(node) {
+        node.php.config = {
+            placeholder: node.content.filter((child) => {
+                return typeof child == 'string';
+            }).join(' '),
+            nl2br: true
+        };
     }
 };
 
 let typeList = Object.keys(configGenerator); 
 
 let editableTypes = [
-    { types: ['input'], tags: ['h1','h2','h3','h4','h5','h6']},
-    { types: ['input', 'wysiwyg'], tags: ['p','span','b']},
+    { types: ['input', 'textarea'], tags: ['h1','h2','h3','h4','h5','h6']},
+    { types: ['input', 'textarea', 'wysiwyg'], tags: ['p','span','b']},
     { types: ['image'], tags: ['img']},
     { types: ['select'], tags: ['select']},
     { types: ['link'], tags: ['a']},
