@@ -20,7 +20,8 @@ class Root extends React.Component {
 
         this.state = {
             multiTag: '',
-            savedClipboard: 0
+            multiCommands: [],
+            savedClipboard: 0,
         };
 
         this.pickTag = (e) => {
@@ -28,8 +29,19 @@ class Root extends React.Component {
         };
 
         this.pickType = (e) => {
-            setMultiple(this.state.multiTag, e.target.value);
-            this.setState({multiTag:''});
+            let multiCommands = [...this.state.multiCommands];
+            multiCommands.push({
+                tag: this.state.multiTag,
+                type: e.target.value
+            });
+
+            this.setState({ multiTag:'', multiCommands });
+        };
+
+        this.runMultiCommand = (e) => {
+            // this is a hack (TODO: replace with a class)
+            let command = e.target.textContent.split(' → ');
+            setMultiple(command[0], command[1]);
         };
 
         this.saveClipboard = () => {
@@ -96,6 +108,11 @@ class Root extends React.Component {
                             {tag}
                         </option>)}
                     </select>
+                    {this.state.multiCommands.map((command, i) => (
+                        <button key={i} onClick={this.runMultiCommand}>
+                            {command.tag} → {command.type}
+                        </button>
+                    ))}
                 </div>
                 <button onClick={store::store.ipsumize}>
                     Ipsumize Content
