@@ -32,12 +32,13 @@ class XML extends React.Component {
     render() {
         let { node } = this.props;
 
-        return <div className={styles.node}>
+        return <div 
+                onMouseOver={this.enter}
+                onMouseOut={this.leave}
+                className={styles.node}>
 
             <XMLTag
                 hover={this.state.hover}
-                enter={this.enter}
-                leave={this.leave}
                 node={node}>
 
                 <Tree content={node.content}/>
@@ -55,7 +56,7 @@ const XMLTag = (props) => {
 
     return <span>
         {/* start tag / attributes */}
-        <span onMouseOver={props.enter} onMouseOut={props.leave}>
+        <span>
             &lt;
             <Colour is="red" bold={true}>{node.tag}</Colour>
             {!props.hideOptions && <Options show={props.hover} node={node}/>}

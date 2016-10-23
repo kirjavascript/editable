@@ -23,7 +23,7 @@ class Tree extends React.Component {
 
             {content.map((node, i) => do {
                 if (typeof node == 'string') {
-                    <div key={i}>{node}</div>;
+                    <div key={i} className={styles.node}>{node}</div>;
                 }
                 else if (node.php.enabled) {
                     <PHP key={i} node={node}/>;

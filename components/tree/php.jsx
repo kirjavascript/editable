@@ -2,8 +2,10 @@ import { observer } from 'mobx-react';
 
 import styles from './styles.scss';
 
-import { Colour } from '../ui/index';
-import { XMLTag } from './xml.jsx';
+import { deleteEditable } from '../../state/editables';
+import { Colour, Icon } from '../ui/index';
+import XML, { XMLTag } from './xml.jsx';
+import Tree from './index.jsx';
 import Options from './options.jsx';
 
 @observer
@@ -44,6 +46,9 @@ class PHP extends React.Component {
                         <PHPTag hover={this.state.hover} node={node}/>
                     </XMLTag>;
                 }
+                else if (node.php.editable == 'block'){
+                    <Block node={node}/>;
+                }
                 else {
                     <PHPTag hover={this.state.hover} node={node}/>;
                 }
@@ -51,6 +56,30 @@ class PHP extends React.Component {
         </div>;
     }
 }
+
+const Block = (props) => {
+    let { node } = props;
+    return <span>
+        <Colour is="red">{'<?php'}</Colour>
+        <Icon type="remove" onClick={() => deleteEditable(node)}/>
+        <Colour is="purple"> while</Colour>
+        {'('}
+        <Colour is="red" bold={true}>$this</Colour>
+        {'->block('}
+            <Colour is="green">{`"${props.node.php.name}"`}</Colour>
+        {')->loop()) : '}
+        <Colour is="red"> {'?>'}</Colour>
+
+            <div className={styles.children}>
+                <Tree content={node.content}/>
+            </div>
+
+        <Colour is="red">{'<?php'}</Colour>
+        <Colour is="purple"> endwhile</Colour>
+        {'; '}
+        <Colour is="red">{'?>'}</Colour>
+    </span>;
+};
 
 const PHPTag = (props) => {
 
@@ -63,7 +92,7 @@ const PHPTag = (props) => {
         <Options show={props.hover} node={node}/>
         <Colour is="red" bold={true}> $this</Colour>
         {`->${php.editable}(`}
-            <Colour is="green">{`'${props.node.php.name}'`}</Colour>
+            <Colour is="green">{`"${props.node.php.name}"`}</Colour>
             <PHPObject config={php.config} root={true}/>
         {')'}
         <Colour is="red"> {'?>'}</Colour>

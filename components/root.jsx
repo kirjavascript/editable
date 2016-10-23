@@ -74,9 +74,6 @@ class Root extends React.Component {
                     value={store.prefix}
                     onChange={this.setPrefix}
                     placeholder="Prefix..."/>
-                <button>
-                    add all tags / block
-                </button>
                 <div style={{position:'relative'}}>
                     {multiTag && <select
                         value=""

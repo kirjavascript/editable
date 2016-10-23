@@ -4,19 +4,26 @@ import xmlBeautifier from 'xml-beautifier';
 
 let initialTree = xmlParse(`
 
-    <div>
+    <!-- pimcore editable editor -->
+    <section>
         <h1 class="heading"> Title </h1>
         <p class="paragraph"> Paragraph of text </p>
         <p class="paragraph"> Paragraph of text </p>
         <a href="http://www.google.com" class="hyper">Google</a>
+        <img class="image" src="/img/test" alt="title"/>
+    </section>
+    <section>
         <select class="choose">
             <option value="value1">text1</option>
             <option value="value2">text2</option>
         </select>
-        <img class="bork" src="/img/test" alt="asdasd" title="asdasd"/>
-    </div>
+    </section>
 
 `);
+
+/*
+
+*/
 
 // input
 
@@ -79,15 +86,30 @@ function addEditableMarkup(content) {
     return content.map((node) => {
         if (node.php && node.php.enabled) {
             let { editable, name, config, keepTag } = node.php;
-            let phpStr = `<?= $this->${editable}("${name}"${PHPObject(config)}) ?>`;
-
-            if (keepTag) {
-                node.content = [phpStr];
+            // block
+            if (editable == 'block') {
+                let blockStart = `<?php while($this->block("${name}")->loop()) : ?>`;
+                let blockEnd = '<?php endwhile; ?>';
+                node.tag = '__PHP_INDENT__';
+                node.attrs = {};
+                node.content.unshift(blockStart);
+                node.content.push(blockEnd);
+                node.content = addEditableMarkup(node.content);
                 return node;
             }
+            // other editables
             else {
-                return phpStr;
+                let phpStr = `<?= $this->${editable}("${name}"${PHPObject(config)}) ?>`;
+
+                if (keepTag) {
+                    node.content = [phpStr];
+                    return node;
+                }
+                else {
+                    return phpStr;
+                }
             }
+
         }
         else if (node.content) {
             node.content = addEditableMarkup(node.content);
@@ -109,7 +131,11 @@ function phpBeautifier(str) {
 
     str = str
         .replace(/__PHP_START__/gm,'<?')
-        .replace(/__PHP_END__/gm,'?>');
+        .replace(/__PHP_END__/gm,'?>')
+        .replace(/<__PHP_INDENT__>\n( *)/gm,'')
+        .replace(/ {4}(.*?)\n( *?)<\/__PHP_INDENT__>/gm,(match,group) => {
+            return group;
+        });
 
     return str;
 }

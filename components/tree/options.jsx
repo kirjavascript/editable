@@ -5,7 +5,8 @@ import {
     setEditable,
     getEditableTypes,
     typeList,
-    clearEditables
+    clearEditables,
+    deleteEditable
 } from '../../state/editables';
 
 class Options extends React.Component {
@@ -22,37 +23,44 @@ class Options extends React.Component {
         });
 
         this.delete = () => {
-            node.php.enabled = 0;
+            deleteEditable(node);
         };
 
         this.xml = () => {
             node.php.keepTag = !node.php.keepTag;
         };
+
+        this.block = () => {
+            setEditable(node, 'block');
+        };
     }
 
     render() {
         let { show, node } = this.props;
-        let php = node.php.enabled;
+        let { php } = node;
 
         let editTypes = getEditableTypes(node.tag);
-        let numTypes = editTypes.length;
-        let motion = {stiffness:300};
+        let numTypes = editTypes.length + 1;
+        let motion = {stiffness:150, damping:15};
 
         return do {
-            if (php) {
+            if (php.enabled) {
                 <span 
                     className={styles.options}
                     style={{marginLeft:5}}>
 
-                    <Icon type="xml" onClick={this.xml}/>
-                    <Icon type="delete" onClick={this.delete}/>
+                    <Icon
+                        type="xml"
+                        title="toggle enclosing tag"
+                        onClick={this.xml}/>
+                    <Icon type="remove" onClick={this.delete}/>
 
                 </span>;
+
             }
             else {
                 <span 
-                    className={styles.options}
-                    style={{marginLeft:(numTypes?5:0)}}>
+                    className={styles.options}>
 
                     {editTypes.map((type) => (
                         <Icon
@@ -60,6 +68,8 @@ class Options extends React.Component {
                             type={type}
                             onClick={this[type]}/>
                     ))}
+
+                    <Icon type="block" onClick={this.block}/>
 
                 </span>;
             }

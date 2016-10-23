@@ -2,11 +2,13 @@ import store from './store';
 
 function setEditable(node, type, cache) {
 
+    let clone = JSON.parse(JSON.stringify(node));
+
     node.php.enabled = 1;
     // calculate name
     if (node.php.editable != type) {
         node.php.editable = type;
-        let className = node.attrs && node.attrs.class ? `_${node.attrs.class}`:'';
+        let className = node.attrs && node.attrs.class ? `_${node.attrs.class.split(' ').shift()}`:'';
         let prefix = store.prefix ? store.prefix+'_' : '';
         let base = `${prefix}${type}${className}`;
 
@@ -21,10 +23,10 @@ function setEditable(node, type, cache) {
 
     if (~typeList.indexOf(type)) {
         node.php.config = {};
-        configGenerator[type](node);
         if (~contentTags.indexOf(node.tag)) {
             node.php.keepTag = true;
         }
+        configGenerator[type](node, clone);
     }
     else {
         node.php.config = {};
@@ -52,14 +54,26 @@ function resetEditables({content}) {
     if (content) {
         content.forEach((node) => {
             if (typeof node != 'string') {
-                node.php.enabled = 0;
-                node.php.editable = '';
+                deleteEditable(node);
                 resetEditables({content:node.content});
             }
         });
     }
     else {
         resetEditables({content: store.xml.tree});
+    }
+}
+
+function deleteEditable(node, reset) {
+    if (node.php.editable == 'block') {
+        Object.assign(node, node.content[0]);
+        if (node.php.enabled == 1) {
+            // deleteEditable(node);
+        }
+    }
+    else {
+        node.php.enabled = 0;
+        node.php.editable = '';
     }
 }
 
@@ -111,20 +125,25 @@ let configGenerator = {
             }).join(' '),
             nl2br: true
         };
+    },
+    block(node, clone) {
+        node.php.keepTag = false;
+        node.content = [clone];
     }
 };
 
 let typeList = Object.keys(configGenerator); 
 
 let editableTypes = [
-    { types: ['input', 'textarea'], tags: ['h1','h2','h3','h4','h5','h6']},
-    { types: ['input', 'textarea', 'wysiwyg'], tags: ['p','span','b']},
+    { types: ['input'], tags: ['blockquote','button','strong']},
+    { types: ['input', 'textarea'], tags: ['h1','h2','h3','h4','h5','h6','pre']},
+    { types: ['input', 'textarea', 'wysiwyg'], tags: ['p','span','div','textarea']},
     { types: ['image'], tags: ['img']},
     { types: ['select'], tags: ['select']},
     { types: ['link'], tags: ['a']},
 ];
 
-let contentTags = ['h1','h2','h3','h4','h5','h6','span','b'];
+let contentTags = ['h1','h2','h3','h4','h5','h6','span','pre','blockquote','p','button','strong'];
 
 let allTags = [].concat(...editableTypes.map((d) => d.tags)).reverse();
 
@@ -135,4 +154,5 @@ export {
     setMultiple,
     typeList,
     allTags,
+    deleteEditable
 };
